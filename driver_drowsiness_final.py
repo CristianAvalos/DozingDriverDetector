@@ -12,10 +12,10 @@ GPIO.setwarnings(False)
 #Global Variables
 #--------------------------------------------------------
 #Minimum Eye Aspect Ratio Threshold to determine eyes closing
-ear_threshold = 0.3
+ear_threshold = 0.25
 
 #Minimum consecutive frames for which eye ratio is below threshold for alarm to be triggered
-ear_frames = 15
+ear_frames = 10
 
 #keeps track of number of consecutive frames 
 counter = 0
@@ -63,7 +63,8 @@ predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 vid = cv2.VideoCapture(0)
 
 #sleeps for camera to start
-time.sleep(2)
+print('Press \'q\' to quit.')
+print('Starting Camera. \n')
 
 while(True):
 	#Read each frame and flip it, and convert to grayscale
@@ -107,9 +108,11 @@ while(True):
 			counter += 1
 			#if eye aspect ratio less than threshold, then chekcs if number of frames greater than threshold and alerts driver
 			if counter >= ear_frames:
+# 				print('Drowsiness Detected.')
 				cv2.putText(frame, "Drowsiness Detected!", (150,200), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,0,255), 2)
 				alertON()
 		else:
+# 			print('Driver is alert.')
 			counter = 0
 			alertOFF()
 	
@@ -117,6 +120,9 @@ while(True):
 	#Displays video frame 
 	cv2.imshow('FRAME', frame)
 	if(cv2.waitKey(1) & 0xFF == ord('q')):
+		print('\nStopping...')
+		alertOFF()
+		GPIO.cleanup()
 		break
 
 
